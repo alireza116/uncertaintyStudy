@@ -1,0 +1,19 @@
+*{
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin:0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#consent-text{
+    padding: 20px;
+}
+#consent h3 {
+    font-size:60px;
+}

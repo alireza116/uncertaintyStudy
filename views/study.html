@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"  crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/study.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Markant Lab Study</title>
+</head>
+<body>
+<div class="container main">
+    <div id="topic"><h2>what do you think?</h2></div>
+    <div id="message" >
+        <div class="callout top-left">
+        </div>
+    </div>
+    <div id="decisions" class="row">
+        <div id="continue" class="col"><p>Next Message</p></div>
+        <div id="decide" class="col"><p>Make a Decision</p></div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Instructions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                Now, you will get to read a series of comments by different people about this topic.
+                <br>
+                 You are free to decide how many messages to read,
+                  <br>you can view more messages by clicking [Next Message] <br> 
+                  <br>When you are ready to make a decision click [Make a decision]
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var decisions = [];
+    $.get("/api/data").then(function(data){
+        $("#exampleModal").modal();
+        $('#exampleModal').on('hidden.bs.modal', function () {
+            var question = data["title"];
+            d3.select("#topic").select("h2").text("Topic: " + question);
+            var dataEmotion = data["data"].slice();
+//            dataEmotion.sort(function(a,b){
+//                return +b["sentiment"] > +a["sentiment"]
+//            });
+
+            var index = 0;
+            var message = d3.select("#message").select(".callout");
+            message.text(' "' + dataEmotion[index]["text"] + '"');
+            decisions.push(Date.now());
+            d3.select("#continue").on("click",function(){
+                index +=1 ;
+                message.text("...");
+                if (index < dataEmotion.length) {
+                    setTimeout(function(){
+                        message.text(' "' + dataEmotion[index]["text"] + '"');
+                        console.log(dataEmotion[index]["sentiment"]);
+                        decisions.push(Date.now());
+                        ; }, 800);
+                } else{
+                    message.text("you have seen all the messages please click on decide")
+                }
+            });
+
+            d3.select("#decide").on("click",function(){
+                $.post("/api/study",{dates:decisions},success=function(result){
+                    console.log(result);
+                    window.location.assign("/decide");
+                });
+
+            })
+        });
+
+    })
+</script>
+</body>
+</html>

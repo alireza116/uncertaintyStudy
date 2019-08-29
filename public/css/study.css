@@ -1,0 +1,150 @@
+*{
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin:0;
+}
+
+.container.main {
+    height:100%;
+
+}
+
+#topic{
+    height:20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+#topic h2 {
+    text-align: center;
+}
+#message {
+    width: 100%;
+    height: 50%;
+    /*background-color: lightgray;*/
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+#decisions{
+    height: 30%;
+}
+
+#message div{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 30px;
+    text-align: center;
+    /*padding: 10%;*/
+
+}
+
+#continue, #decide {
+    height: 100%;
+    /*width: 30%;*/
+
+    float: left;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#decisions p {
+    font-size: xx-large;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+}
+
+#decisions p:hover{
+    background-color: orange;
+}
+
+#continue p {
+    background-color: teal;
+    text-align: center;
+    padding: 100px;
+}
+
+#decide p {
+    background-color: green;
+    text-align: center;
+    padding: 100px;
+}
+
+div.callout {
+    height: 80%;
+    width: 60%;
+    /*float: left;*/
+    /*left: 30%;*/
+}
+
+div.callout {
+    background-color: #444;
+    background-image: -moz-linear-gradient(top, #444, #444);
+    position: relative;
+    left: 20%;
+    color: #ccc;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 20px #999;
+    margin: 25px;
+    min-height: 50px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    text-shadow: 0 0 1px #000;
+    /*margin: 0 auto;*/
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.callout::before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    border: 0.8em solid transparent;
+    position: absolute;
+}
+
+.callout.top::before {
+    left: 45%;
+    bottom: -20px;
+    border-top: 10px solid #444;
+}
+
+.callout.bottom::before {
+    left: 45%;
+    top: -20px;
+    border-bottom: 10px solid #444;
+}
+
+.callout.left::before {
+    right: -20px;
+    top: 40%;
+    border-left: 10px solid #444;
+}
+
+.callout.right::before {
+    left: -20px;
+    top: 40%;
+    border-right: 10px solid #444;
+}
+
+.callout.top-left::before {
+    left: 20px;
+    bottom: -40px;
+    border-top: 25px solid #444;
+}
+
+.callout.top-right::before {
+    right: 7px;
+    bottom: -20px;
+    border-top: 10px solid #444;
+}

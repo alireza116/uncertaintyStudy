@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uncertainty</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <style>
+        *{
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        html, body{
+            width:100%;
+            height:100%;
+            margin:0;
+        }
+        .main{
+            margin: 0 auto;
+            width:80%;
+            height:60%;
+        }
+        .charts{
+            height:100%;
+        }
+        #chart1, #chart2{
+            /*width:400px;*/
+            /*height:400px;*/
+            margin:0 auto;
+            height:100%;
+            /*float: left;*/
+        }
+svg{
+    display: block;
+    margin: 0 auto;
+}
+
+        /*.line {*/
+            /*fill: none;*/
+            /*stroke: #ffab00;*/
+            /*stroke-width: 5;*/
+            /*pointer-events: none;*/
+        /*}*/
+
+
+        .focus circle {
+            fill: none;
+            stroke: steelblue;
+        }
+
+        .instructions p{
+            text-align: center;
+            font-size:x-large;
+        }
+        .identical{
+            margin: 0 auto;
+            display:block;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid main">
+    <h4>which one these line charts best represents the relationship between <span id="varX"></span> and <span id="varY"></span>? hit M for the right chart and C the for left chart on the keyboard
+        <br>
+         the line colored <span id="choiceColor"></span> is your previous choice, <span id="newColor"></span> shows a new option. Always compare and choose the better choice.
+        .</h4>
+    <div class="row charts">
+        <div class="col" >
+            <div id="chart1" style="margin: 0 auto"></div>
+        </div>
+        <div class="col" >
+            <div id="chart2" style="margin: 0 auto"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-secondary identical">They lines are identical</button>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<script src="/js/lineChartMC.js"></script>
+
+<script>
+
+    $.get("/api/data",function(data){
+        var variables = data;
+
+        var uniform = d3.randomUniform(-1,1);
+        var slope1 = uniform();
+        var slope2 = uniform();
+        var slopes = [slope1,slope2];
+        var choiceColor = "red";
+        var newColor = "orange";
+        var decay = false;
+        var beliefData = {};
+        var stdScale = d3.scaleLinear().domain([0,100]).range([0.4,0.01]);
+        $("#choiceColor").text(choiceColor).css("color",choiceColor);
+        $("#newColor").text(newColor).css("color",newColor);
+
+        $("#varX").text(variables[0]);
+        $("#varY").text(variables[1]);
+        console.log(slopes);
+        var chart1 =  new LineChartMC("chart1",variables);
+        var chart2 = new LineChartMC("chart2",variables);
+        chart1.createChart(slopes[0]);
+        chart2.createChart(slopes[1]);
+        var choices = [];
+        var std;
+        document.addEventListener("keypress",function(event){
+            var keyCode = event.keyCode;
+            keyCode = String.fromCharCode(keyCode);
+            var choice;
+            std = decay ? stdScale(choices.length) : 0.2;
+            console.log(std);
+            if (keyCode==="m"){
+                choice = slopes[1];
+                choices.push(choice);
+                var choiceSample = d3.randomNormal(choice,std)();
+                if (choiceSample > 1) {
+                    choiceSample = 1;
+                } else if (choiceSample <-1) {
+                    choiceSample = -1;
+                }
+                slopes = [choiceSample,choice];
+                console.log(slopes);
+                if (uniform()<-0.5){
+                    slopes = [slopes[1],slopes[0]];
+                    chart1.highlightLine(choiceColor);
+                    chart2.highlightLine(newColor);
+                } else {
+                    chart2.highlightLine(choiceColor);
+                    chart1.highlightLine(newColor);
+                }
+
+                chart1.updateChart(slopes[0]);
+                chart2.updateChart(slopes[1]);
+                d3.select("#M")
+                    .transition()
+                    .attr("fill","red")
+                    .duration(500)
+                    .transition()
+                    .attr("fill","black")
+                    .duration(500);
+
+            } else if (keyCode==="c"){
+                choice = slopes[0];
+                choices.push(choice);
+                var choiceSample = d3.randomNormal(choice,std)();
+                if (choiceSample > 1) {
+                    choiceSample = 1;
+                } else if (choiceSample <-1) {
+                    choiceSample = -1;
+                }
+                slopes = [choice,choiceSample];
+
+                if (uniform()<-0.5){
+                    slopes = [slopes[1],slopes[0]];
+                    chart2.highlightLine(choiceColor);
+                    chart1.highlightLine(newColor);
+                    console.log("swithc");
+                } else{
+                    chart1.highlightLine(choiceColor);
+                    chart2.highlightLine(newColor);
+                }
+                console.log(slopes);
+//            LineChart("chart2",slopes[1],variables);
+//            LineChart("chart1",slopes[0],variables);
+                chart1.updateChart(slopes[0]);
+                chart2.updateChart(slopes[1]);
+                d3.select("#C")
+                    .transition()
+                    .attr("fill","red")
+                    .duration(500)
+                    .transition()
+                    .attr("fill","black")
+                    .duration(500);
+            }
+
+
+            if (choices.length === 100){
+                beliefData["belief"] = choices;
+                console.log(beliefData);
+                $.post("/api/study",data=beliefData ,
+                    success=function(d){
+                        console.log(d);
+                        console.log("success");
+                        window.location.assign("/next");
+                    }
+                );
+
+            }
+        });
+
+        $(".identical").click(function(event){
+            event.preventDefault();
+            var choiceRandom = Math.floor(d3.randomUniform(0,2)());
+            var choice = slopes[choiceRandom];
+            choices.push(choice);
+            var choiceSample = d3.randomNormal(choice,std)();
+            if (choiceSample > 1) {
+                choiceSample = 1;
+            } else if (choiceSample <-1) {
+                choiceSample = -1;
+            }
+            if (choiceRandom===0){
+                slopes = [choice,choiceSample];
+                chart1.updateChart(slopes[0]);
+                chart2.updateChart(slopes[1]);
+                chart1.highlightLine(choiceColor);
+                chart2.highlightLine(newColor);
+            } else {
+                slopes = [choiceSample,choice];
+                chart1.updateChart(slopes[0]);
+                chart2.updateChart(slopes[1]);
+                chart1.highlightLine(newColor);
+                chart2.highlightLine(choiceColor);
+            }
+
+            if (choices.length === 100){
+                beliefData["belief"] = choices;
+                console.log(beliefData);
+                $.post("/api/study",data=beliefData ,
+                    success=function(d){
+                        console.log(d);
+                        console.log("success");
+                        window.location.assign("/next");
+                    }
+                );
+
+
+            }
+
+        })
+    })
+
+
+
+
+</script>
+</body>
+</html>
