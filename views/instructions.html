@@ -24,16 +24,50 @@
 <body>
     <div class="container bg-light" id="instructions">
         <h3>Study Instructions</h3>
-        <p>
-        Welcome! In this task you will be asked about your position on four different programs and/or legislation that have been proposed at either national or state levels. <br><br>
+        <p>Welcome! In this study you will be asked to make a series of judgments
+        based on your belief about the strength of the relationship between two 
+        variables.</p>
 
-            We are interested in people’s opinions regarding the possible implementation of these programs.<br><br>
-First, each program and a brief description will be presented to you. You will be asked about your current opinion and your level of familiarity with the issue. <br><br>
-Then, we will ask you to read a series of opinions and insights of others on each of these programs. You will be free to decide how many messages to read. When you feel you have read enough and are ready to make your final decision, you will again be asked to state your position (support vs. oppose) regarding the program. <br><br>
-Your recorded responses on these issues will be anonymous. Your participation in this research study is voluntary and you can opt out at any time by closing the web browser. 
+        <p>The relationship between two variables will be represented by a line, as 
+        in the examples below. The angle of the line indicates the degree to which
+        one variable increases or decreases as the other variable changes.</p>
 
-        </p>
+        <p>For example, for two variables that have a perfectly <b>negative</b>
+        relationship, each unit increase in X is associated with a unit <i>decrease</i> in Y.
+        As a result, the line for a perfectly <b>negative</b> relationship would look like this:</p>
+
+        (positive image)
+
+        <p>For two variables that have a perfectly <b>positive</b> relationship, each unit
+        increase in X is associated with a unit <i>increase</i> in Y. As a result, the line for
+        a perfectly <b>positive</b> relationship would look like this:</p>
+
+        (negative image)
+
+        <p>If two variables are totally <b>unrelated</b> to each other, a unit increase in X is 
+        associated with <i>no change</i> in Y. As a result, the line for the relationship
+        between <b>unrelated</b> variables would look like this:</p>
         
+        (flat line)
+
+        <p>Let's take an example set of variables, X = height and Y = weight. Of 
+        the three lines shown below, which one do you think best represents the 
+        true relationship between height and weight? Think about what is the expected change in 
+        weight (Y) as height (X) increases.</p>
+
+        (choose one of three images)
+
+
+        <p>That's right! Height and weight have a moderately positive relationship: Taller people 
+        tend to weigh more. However, this relationship is not perfect, since there are many tall
+        people who don't weigh that much, as well as many short people who weigh a lot. So unlike the 
+        line shown above for a perfectly positive relationship, the correct line for height and weight
+        is closer to a horizontal line.</p>
+
+        
+        <p>In the remainder of the study you'll be making judgments based on your beliefs about pairs
+        of variables. Press Continue below to learn more about the next steps.</p>
+
 
         <button type="submit" class="btn btn-secondary" id="consent">Continue</button>
 
@@ -51,7 +85,7 @@ Your recorded responses on these issues will be anonymous. Your participation in
         //    window.location.assign("/consent");
         $("#consent").click(function(event){
             event.preventDefault();
-            window.location.assign("/study");
+            window.location.assign("/instructions2");
         })
     </script>
 </body>

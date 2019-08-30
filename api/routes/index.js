@@ -67,10 +67,10 @@ function getRandomInt(max) {
 //   fs.readFileSync(`public/data/finalData.json`, "utf8")
 // );
 const variables = [
-  ["Income", "Height"],
-  ["Weight of Diamond", "Price of Diamon"],
+  ["Yearly Income", "Height"],
+  ["Weight of a Diamond", "Price of a Diamond"],
   ["Verbal SAT Score", "Math SAT Score"],
-  ["Stress", "Income"],
+  ["Stress", "Yearly Income"],
   ["Vaccination Rate", "Rate of Illness"]
 ];
 
@@ -206,6 +206,23 @@ router.get("/instructions", function(req, res) {
   }
 });
 
+router.get("/instructions2", function(req, res) {
+  if (req.session.completed) {
+    res.render("debrief.html");
+  } else {
+    res.render("instructions2.html");
+  }
+});
+
+router.get("/instructions-MC", function(req, res) {
+  if (req.session.completed) {
+    res.render("debrief.html");
+  } else {
+    res.render("instructions-MC.html");
+  }
+});
+
+
 router.get("/preforms", function(req, res) {
   if (!req.session.completed) {
     res.render("preforms.html");
@@ -214,6 +231,18 @@ router.get("/preforms", function(req, res) {
 
 router.get("/postforms", function(req, res) {
   res.render("postforms.html");
+});
+
+router.get("/instructions-study", function(req, res) {
+  console.log(req.session.state);
+    if (req.session.state === "draw"){
+      res.render("instructions-LC.html");
+    } else if (req.session.state === "mc") {
+      res.render("instructions-MC.html")
+    }
+    else{
+      res.send("error!");
+    }
 });
 
 router.get("/study", function(req, res) {

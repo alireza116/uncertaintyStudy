@@ -17,10 +17,14 @@ html, body {
 }
 
 #instructions h3 {
-    font-size:60px;
+    font-size:40px;
 }
 
 #instructions p {
-    font-size: 24px;
+    font-size: 18px;
 
+}
+
+.varX, .varY {
+    font-weight: bold;
 }
