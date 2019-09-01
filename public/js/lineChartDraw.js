@@ -44,7 +44,15 @@ function LineChartDraw(chartID,variables){
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         // .attr("clip-path", "url(#rect-clip)");
-
+    var helperDataset =
+        [
+            {x:0,y:0},
+            {x:1,y:1},
+            {x:1,y:0},
+            {x:0,y:1}
+        ];
+    svg.append("path").data([helperDataset]).attr("class","helper").attr("d", valueLine)
+        .attr("fill","white");
 
 // 3. Call the x axis in a group tag
     var xAxis = svg.append("g")

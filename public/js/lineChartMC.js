@@ -1,7 +1,7 @@
 function LineChartMC(chartID,variables){
     var line;
-    var cwidth = document.querySelector("#"+chartID).clientWidth;
-    var cheight = document.querySelector("#"+chartID).clientHeight;
+    // var cwidth = document.querySelector("#"+chartID).clientWidth;
+    // var cheight = document.querySelector("#"+chartID).clientHeight;
     var cwidth = $("#"+chartID).width();
     var cheight = $("#"+chartID).height();
     cwidth = cheight;
@@ -33,12 +33,24 @@ function LineChartMC(chartID,variables){
     var dataset = [];
 //    console.log(dataset);
 // 1. Add the SVG to the page and employ #2
+
+
     var svg = d3.select("#"+chartID).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         // .attr("clip-path", "url(#rect-clip)");
+
+    var helperDataset =
+        [
+            {x:0,y:0},
+            {x:1,y:1},
+            {x:1,y:0},
+            {x:0,y:1}
+        ];
+    svg.append("path").data([helperDataset]).attr("class","helper").attr("d", valueLine)
+        .attr("fill","white");
 
     if (chartID==="chart2"){
         svg.append("text").attr("id","M")
@@ -79,18 +91,23 @@ function LineChartMC(chartID,variables){
         .attr("transform","translate("+-margin.left+","+-margin.top+")"); // position the y-centre
 
 
+    var variableSplit = variables[0].split(" ");
+    variableSplit.forEach(function(v,i){
+        svg.append("text").attr("id","x label")
+            .attr("text-anchor","start")
+            .attr("x",width+ 10)
+            .attr("y",height/2+((i+1)*10+(i*5)))
+            .text(v);
+    });
 
-    svg.append("text").attr("id","x label")
-        .attr("text-anchor","start")
-        .attr("x",width+ 10)
-        .attr("y",height/2+10)
-        .text(variables[0]);
 
     svg.append("text").attr("id","y label")
         .attr("text-anchor","middle")
         .attr("x",width/2 )
         .attr("y",-10)
         .text(variables[1]);
+
+
 
     // var pos = {x:0,y:0};
 this.createChart = function(corr){
