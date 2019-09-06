@@ -69,7 +69,6 @@ function getRandomInt(max) {
 const variables = [
   ["Yearly Income", "Height"],
   ["Weight of a Diamond", "Price of a Diamond"],
-  ["Verbal SAT Score", "Math SAT Score"],
   ["Stress", "Yearly Income"],
   ["Vaccination Rate", "Rate of Illness"]
 ];
@@ -221,6 +220,13 @@ router.get("/instructions-MC", function(req, res) {
     res.render("instructions-MC.html");
   }
 });
+router.get("/instructions-draw", function(req, res) {
+  if (req.session.completed) {
+    res.render("debrief.html");
+  } else {
+    res.render("instructions-draw.html");
+  }
+});
 
 
 router.get("/preforms", function(req, res) {
@@ -270,7 +276,7 @@ router.get("/next", function(req, res) {
     req.session.completed = true;
     res.redirect("/postforms");
   } else {
-    res.redirect("/study");
+    res.redirect("/instructions-study");
   }
 });
 
