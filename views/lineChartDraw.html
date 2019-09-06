@@ -54,6 +54,14 @@
             pointer-events:none;
         }
 
+        .title{
+            padding: 20px; 
+            height:20%;
+            text-align:center;
+        }
+        #varX, #varY {
+            font-weight: bold;
+        }
 
 
         .focus circle {
@@ -77,9 +85,12 @@
 </head>
 <body>
 <div class="container-fluid bg-light main">
-    <h4 style="text-align: center;"> Use mouse to select a line that best shows the relationship between <span id="varX"></span> and <span id="varY"></span>. Click on the chart to save the line.
-        <br>
-     Next you can show how much certain you are about your choice. This radius means you think the correlation can be any of these lines.
+    <h4 class="title">
+        <p>Use the mouse to select a line that represents the <b>most likely</b> relationship between</p>
+        <p><span id="varX"></span> and <span id="varY"></span></p>
+        <p>Click the mouse button to save the line. Then, use the mouse to adjust the set of lines that are plausible alternatives for the relationship between the variables. When
+        the lines cover the range of plausible relationships, click the mouse button to save your response. If you want to change your response,
+        click the "I'm not happy with my choice" button and start over. Otherwise, press Continue when finished.</p>
     </h4>
     <div class="row charts">
         <div class="col-6 linechart" >
