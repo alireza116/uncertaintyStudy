@@ -80,7 +80,11 @@
         /*}*/
 
         .title{
-            height:10%;
+            padding: 20px; height:15%;
+            text-align:center;
+        }
+        #varX, #varY {
+            font-weight: bold;
         }
 
         .charts{
@@ -94,9 +98,13 @@
 </head>
 <body>
 <div class="container-fluid bg-light main">
-    <h4 class="title">which one these line charts best represents the relationship between <span id="varX"></span> and <span id="varY"></span>? hit M for the right chart and C the for left chart on the keyboard
-        <br>
-         the line colored <span id="choiceColor"></span> is your previous choice, <span id="newColor"></span> shows a new option. Always compare and choose the better choice.</h4>
+    <h4 class="title">
+        <p>Which of the lines below best represents the relationship between</p>
+        <p><span id="varX"></span> and <span id="varY"></span>?</p>
+        <p>Press the C key for the left line and the M key for the right line.
+        The <span id="choiceColor"></span> line is your previous choice, the <span id="newColor"></span> line is a new option. 
+        Always compare and choose the line that is more likely to represent the relationship between the variables.</p>
+    </h4>
     <div class="row charts">
         <div class="col-6"  id="chart1">
             <!--<div  style="margin: 0 auto"></div>-->
