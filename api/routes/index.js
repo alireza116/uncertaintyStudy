@@ -74,7 +74,7 @@ function getRandomInt(max) {
 let variables = shuffle([
   ["Yearly Income", "Height"],
   ["Weight of a Diamond", "Price of a Diamond"],
-  ["Stress", "Yearly Income"],
+  ["Yearly Income","Stress"],
   ["Vaccination Rate", "Rate of Illness"],
   ["Exercise amount","Body Weight"]
 ]);
