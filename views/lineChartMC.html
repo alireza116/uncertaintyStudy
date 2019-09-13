@@ -26,7 +26,7 @@
         }
         .main{
             margin: 0 auto;
-            width:75%;
+            width:80%;
             height:100%;
         }
 
@@ -42,8 +42,25 @@
             display: block;
             margin: 0 auto;
         }
+        .title{
+            height:15%;
+            font-size: 1.2em;
+            padding-top: 20px;
+            text-align:center;
+            margin:0;
+        }
+        .chartChoice{
+            height:85%;
+        }
+        .charts{
+            height:90%;
+            margin:0;
+        }
 
-
+        .choices{
+            height:10%;
+            margin:0;
+        }
         .focus circle {
             fill: none;
             stroke: steelblue;
@@ -79,43 +96,35 @@
             /*100% { transform: rotate(360deg); }*/
         /*}*/
 
-        .title{
-            padding: 20px; height:15%;
-            text-align:center;
-        }
+
         #varX, #varY {
             font-weight: bold;
         }
 
-        .charts{
-            height:80%;
-
-        }
-        .choices{
-            height:10%;
-        }
     </style>
 </head>
 <body>
 <div class="container-fluid bg-light main">
-    <h4 class="title">
+    <div class="title">
         <p>Which of the lines below best represents the relationship between</p>
         <p><span id="varX"></span> and <span id="varY"></span>?</p>
-        <p>Press the C key for the left line and the M key for the right line.
+        <p style="margin:0">Press the C key for the left line and the M key for the right line.
         The <span id="choiceColor"></span> line is your previous choice, the <span id="newColor"></span> line is a new option. 
         Always compare and choose the line that is more likely to represent the relationship between the variables.</p>
-    </h4>
-    <div class="row charts">
-        <div class="col-6"  id="chart1">
-            <!--<div  style="margin: 0 auto"></div>-->
-        </div>
-        <div class="col-6" id="chart2">
-            <!--<div  style="margin: 0 auto"></div>-->
-        </div>
     </div>
-    <div class="row choices">
-        <div class="col">
-            <button class="btn btn-secondary identical">They lines are identical</button>
+    <div class="chartChoice">
+        <div class="row charts">
+            <div class="col-6"  id="chart1">
+                <!--<div  style="margin: 0 auto"></div>-->
+            </div>
+            <div class="col-6" id="chart2">
+                <!--<div  style="margin: 0 auto"></div>-->
+            </div>
+        </div>
+        <div class="row choices">
+            <div class="col">
+                <button class="btn btn-secondary identical">They look identical to me</button>
+            </div>
         </div>
     </div>
 
@@ -124,6 +133,21 @@
 <script src="/js/lineChartMC.js"></script>
 
 <script>
+
+//    $(".chartChoice").height(function(){
+//        var titleHeight = $(".title").height();
+//        return $(".main").height() - titleHeight;
+//    });
+//
+//        $(".choices").height(function(){
+//            return $("button").height();
+//        });
+//
+
+
+//    $('.charts').height(function(){
+//        return $(".chartChoice").height() - $(".choices").height();
+//    });
 
     $.get("/api/data",function(data){
         var variables = data;

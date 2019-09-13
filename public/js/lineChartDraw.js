@@ -52,7 +52,14 @@ function LineChartDraw(chartID,variables){
             {x:0,y:1}
         ];
     svg.append("path").data([helperDataset]).attr("class","helper").attr("d", valueLine)
-        .attr("fill","white");
+        .attr("fill","white").attr("clip-path","url(#circle-clip)");
+    svg
+        .append("clipPath") // define a clip path
+        .attr("id", "circle-clip") // give the clipPath an ID
+        .append("circle") // shape it as an ellipse
+        .attr("cx", width/2) // position the x-centre
+        .attr("cy", height/2)
+        .attr("r",width/2);
 
 // 3. Call the x axis in a group tag
     var xAxis = svg.append("g")
@@ -75,7 +82,14 @@ function LineChartDraw(chartID,variables){
         .attr("height", height+margin.top)
         .attr("transform","translate("+-margin.left+","+-margin.top+")"); // position the y-centre
 
-
+    svg
+        .append("clipPath") // define a clip path
+        .attr("id", "circle-clip") // give the clipPath an ID
+        .append("circle") // shape it as an ellipse
+        .attr("cx", width/2) // position the x-centre
+        .attr("cy", height/2)
+        .attr("r",width/2)
+        // .attr("transform","translate("+-margin.left+","+-margin.top+")"); // position the y-centre
 
     svg.append("text").attr("id","x label")
         .attr("text-anchor","start")
@@ -224,6 +238,7 @@ this.createChart = function(corr){
                 uncertainty.data([dataset]).attr("d",valueLine);
                 uncertainty.attr("transform","translate("+width/2+","+ (-height/2)+")")
                 makeUncertainty(50);
+                console.log(beliefData);
             }
         });
 
@@ -231,8 +246,15 @@ this.createChart = function(corr){
         // var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/8);
         var uniform = d3.randomUniform(minAngle,maxAngle);
         // var opRange = [maxAngle-(minAngle+maxAngle)/2,0];
-        var opRange = [0,Math.abs(maxAngle-(minAngle+maxAngle)/2)];
-        console.log(opRange);
+        // if (maxAngle > minAngle){
+        //     var opRange = [0,maxAngle-selectedAngle];
+        // } else {
+        //     var opRange = [0,minAngle-selectedAngle];
+        // }
+
+        var opRange = [0,Math.abs(maxAngle - selectedAngle)];
+
+        // console.log(opRange);
         var opScale = d3
             .scalePow()
             // .scalePow()
@@ -241,7 +263,7 @@ this.createChart = function(corr){
             // .range([0.01,1]);
             .range([1,0.01]);
         uncertaintyPaths.selectAll("path").remove();
-        console.log(opRange);
+        // console.log(opRange);
         // console.log([minAngle,maxAngle]);
         console.log("uncertainty paths");
         for (var i=0; i <n;i++){
@@ -259,7 +281,9 @@ this.createChart = function(corr){
             dataset.push(pos);
             dataset.push(pos1);
             uncertaintyPaths.append("path").data([dataset]).attr("d",valueLine).attr("class","uncertaintyPaths").attr("fill","none").attr("stroke","darkgrey").attr("stroke-opacity",function(){
-                return opScale(Math.abs(posDegree-Math.abs((minAngle+maxAngle)/2)));
+                // return opScale(Math.abs(posDegree-Math.abs((minAngle+maxAngle)/2)));
+                return opScale(Math.abs(posDegree-selectedAngle));
+                // return 0.4
             });
             uncertaintyPaths.attr("transform","translate("+width/2+","+ (-height/2)+")");
         }

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uncerainty Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin=""></script>
+    <link rel="stylesheet" href="/css/preforms.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div class="container bg-light">
+    <form class="questions">
+        <h1>Which of these sets of the variables was the last one you answered?</h1>
+        <fieldset class="form-group" style="background: #f9f9f9;" >
+            <label for="lastvar">Select an option</label>
+            <select class="form-control" id="lastvar" name="lastvar">
+                <option val="income height">Year Income and Height</option>
+                <option val="stress income">Stress and Yearly Income</option>
+                <option val="vaccination illnes">Vaccination Rate and Rate of Illness</option>
+                <option val="exercise weight">Exercise amount and Body Weight</option>
+                <option val="weight price">Weight of a Diamond and Price of a Diamon</option>
+                <option val="hot chocolate temperature">Sale of hot chocolate and Temperature</option>
+            </select>
+
+        </fieldset>
+        <button type="submit" class="btn btn-primary" id="presubmit">Submit</button>
+
+    </form>
+</div>
+
+
+
+<!-- <script src="/js/article.js"></script>
+<script src="/js/study.js"></script> -->
+<script>
+
+    var windowWidth = window.screen.width;
+    var windowHeight= window.screen.height;
+
+    // Opera 8.0+
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+    // Firefox 1.0+
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+
+    // Safari 3.0+ "[object HTMLElementConstructor]"
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+    // Internet Explorer 6-11
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    // Edge 20+
+    var isEdge = !isIE && !!window.StyleMedia;
+
+    // Chrome 1+
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+    // Blink engine detection
+    var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+    var browser  = {
+        isOpera : isOpera,
+        isFirefox: isFirefox,
+        isSafari: isSafari,
+        isIE: isIE,
+        isEdge: isEdge,
+        isChrome: isChrome,
+        isBlink: isBlink
+    };
+
+    var browserInfo = {
+        browser : browser,
+        screenSize:{
+            windowWidth : windowWidth,
+            windowHeight: windowHeight
+        }
+
+    };
+    $.post("/api/browser",data=browserInfo,success=function(d){
+        console.log(d);
+
+    });
+
+    $("#sidebar").height(function(){
+        return $("html").height();
+    });
+
+    $("#presubmit").click(function(event){
+        event.preventDefault();
+        var data = $(".questions").serializeArray();
+
+//        window.location.assign("/instructions");
+//        console.log(data);
+//        console.log(data[0]);
+        var newData = {
+        };
+        console.log(newData);
+        newData[data[0]["name"]] = data[0]["value"];
+        if (data.length === 1) {
+            $.post("/api/intermission",newData,
+                success=function(d){
+                    console.log(d);
+                    console.log("success");
+                    window.location.assign("/instructions-study");
+                }
+            )
+        } else {
+            console.log(data);
+            alert("please fill out all questions.")
+        }
+
+
+    })
+</script>
+</body>
+</html>
+

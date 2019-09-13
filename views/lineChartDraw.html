@@ -27,10 +27,26 @@
         .main{
             margin: 0 auto;
             width:80%;
-            height:60%;
+            height:100%;
+        }
+        .title{
+            height:20%;
+            font-size: 1.2em;
+            padding-top: 20px;
+            text-align:center;
+            margin:0;
+        }
+        .chartChoice{
+            height:80%;
         }
         .charts{
-            height:100%;
+            height:90%;
+            margin:0;
+        }
+
+        .choices{
+            height:10%;
+            margin:0;
         }
         #chart1, #chart2{
             /*width:400px;*/
@@ -54,11 +70,7 @@
             pointer-events:none;
         }
 
-        .title{
-            padding: 20px; 
-            height:20%;
-            text-align:center;
-        }
+
         #varX, #varY {
             font-weight: bold;
         }
@@ -85,27 +97,29 @@
 </head>
 <body>
 <div class="container-fluid bg-light main">
-    <h4 class="title">
+    <h6 class="title">
         <p>Use the mouse to select a line that represents the <b>most likely</b> relationship between</p>
         <p><span id="varX"></span> and <span id="varY"></span></p>
         <p>Click the mouse button to save the line. Then, use the mouse to adjust the set of lines that are plausible alternatives for the relationship between the variables. When
         the lines cover the range of plausible relationships, click the mouse button to save your response. If you want to change your response,
-        click the "I'm not happy with my choice" button and start over. Otherwise, press Continue when finished.</p>
-    </h4>
-    <div class="row charts">
-        <div class="col-6 linechart" >
-            <div id="chart1" style="margin: 0 auto"></div>
+        click the "Reset" button and start over. Otherwise, press Continue when finished.</p>
+    </h6>
+    <div class="chartChoice">
+        <div class="row charts">
+            <div class="col-6 linechart" >
+                <div id="chart1" style="margin: 0 auto"></div>
+            </div>
+        </div>
+        <div class="row choices">
+            <div class="col">
+                <button class="btn btn-secondary" id="repeat">Reset</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-secondary" id="next">Continue</button>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <button class="btn btn-secondary" id="repeat">I'm not happy with my choice</button>
-        </div>
-        <div class="col">
-            <button class="btn btn-secondary" id="next">Continue</button>
-        </div>
 
-    </div>
 </div>
 
 
@@ -114,6 +128,18 @@
 
 <script>
 
+//    $(".chartChoice").height(function(){
+//       var titleHeight = $(".title").height();
+//       return $(".main").height() - titleHeight;
+//    });
+//
+////    $(".choices").height(function(){
+////        return $("button").height();
+////    });
+//
+//    $('.charts').height(function(){
+//        return $(".chartChoice").height() - $(".choices").height();
+//    });
 
     $.get("/api/data",function(data){
         var uniform = d3.randomUniform(-1,1);
@@ -127,14 +153,19 @@
 
         $("#next").click(function(event){
             event.preventDefault();
-            $.post("/api/study",data=beliefData ,
-                success=function(d){
-                    console.log(d);
-                    console.log("success");
-                    window.location.assign("/next");
-                };
-            );
-        })
+            if (uncertaintySelected & selected) {
+                $.post("/api/study",data=beliefData ,
+                    success=function(d){
+                        console.log(d);
+                        console.log("success");
+                        window.location.assign("/next");
+                    }
+                );
+            } else {
+             alert("please make your choices");
+            }
+
+        });
 
         $("#repeat").click(function(event){
             uncertaintySelected=false;

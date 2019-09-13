@@ -2,12 +2,13 @@ function LineChartMC(chartID,variables){
     var line;
     // var cwidth = document.querySelector("#"+chartID).clientWidth;
     // var cheight = document.querySelector("#"+chartID).clientHeight;
-    var cwidth = $("#"+chartID).width();
-    var cheight = $("#"+chartID).height();
-    cwidth = cheight;
+    var cwidth = $("#"+chartID).width() * 0.9;
+    var cheight = $("#"+chartID).height() * 0.9;
+    // cwidth = cheight;
+    cheight = cwidth;
     console.log(cwidth);
     console.log(cheight);
-    var margin = {top: 70, right: 70, bottom: 70, left: 70}
+    var margin = {top: 90, right: 90, bottom: 90, left: 90}
         , width = cwidth - margin.left - margin.right // Use the window's width
         , height = cheight - margin.top - margin.bottom; // Use the window's height
     var slopeScale = d3.scaleLinear().domain([1,-1]).range([45,-45]);
@@ -49,8 +50,16 @@ function LineChartMC(chartID,variables){
             {x:1,y:0},
             {x:0,y:1}
         ];
+
     svg.append("path").data([helperDataset]).attr("class","helper").attr("d", valueLine)
-        .attr("fill","white");
+        .attr("fill","white").attr("clip-path","url(#circle-clip)");
+
+    svg.append("clipPath") // define a clip path
+        .attr("id", "circle-clip") // give the clipPath an ID
+        .append("circle") // shape it as an ellipse
+        .attr("cx", width/2) // position the x-centre
+        .attr("cy", height/2)
+        .attr("r",width/2);
 
     if (chartID==="chart2"){
         svg.append("text").attr("id","M")
