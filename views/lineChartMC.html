@@ -76,7 +76,12 @@
         }
 
 
-
+        .loader{
+            position: absolute;
+            left:50%;
+            top:45%;
+            display:none;
+        }
 
         /*.loader {*/
             /*border: 40px solid rgba(100,100,100,0.5); !* Light grey *!*/
@@ -129,7 +134,7 @@
     </div>
 
 </div>
-<div class="loader"></div>
+<img class="loader" src="/images/loader.gif">
 <script src="/js/lineChartMC.js"></script>
 
 <script>
@@ -149,12 +154,19 @@
 //        return $(".chartChoice").height() - $(".choices").height();
 //    });
 
+    $(".loader").css("display","block");
+    $(".main").css("opacity","0.1");
+    setTimeout(function(){
+        $(".loader").css('display',"none");
+        $(".main").css("opacity","1");
+    },1000);
+
     $.get("/api/data",function(data){
         var variables = data;
 
         var uniform = d3.randomUniform(-1,1);
-        var slope1 = uniform();
-        var slope2 = uniform();
+        var slope1 =d3.randomUniform(-1,0)();
+        var slope2 = d3.randomUniform(0,1)();
         var slopes = [slope1,slope2];
         var choiceColor = "red";
         var newColor = "orange";
@@ -198,6 +210,7 @@
                     chart2.highlightLine(choiceColor);
                     chart1.highlightLine(newColor);
                 }
+
 
                 chart1.updateChart(slopes[0]);
                 chart2.updateChart(slopes[1]);

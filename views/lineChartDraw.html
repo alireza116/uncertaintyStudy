@@ -88,6 +88,13 @@
         .linechart{
             margin: 0 auto;
         }
+        .loader{
+            position: absolute;
+            left:50%;
+            top:45%;
+            display:none;
+        }
+
 
         #next, #repeat{
             margin: 0 auto;
@@ -123,7 +130,7 @@
 </div>
 
 
-
+<img class="loader" src="/images/loader.gif">
 <script src="/js/lineChartDraw.js"></script>
 
 <script>
@@ -140,6 +147,13 @@
 //    $('.charts').height(function(){
 //        return $(".chartChoice").height() - $(".choices").height();
 //    });
+
+$(".loader").css("display","block");
+$(".main").css("opacity","0.1");
+setTimeout(function(){
+    $(".loader").css('display',"none");
+    $(".main").css("opacity","1");
+},1000);
 
     $.get("/api/data",function(data){
         var uniform = d3.randomUniform(-1,1);

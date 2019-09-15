@@ -119,6 +119,7 @@ router.get("/api/consent", function(req, res) {
     req.session.variables = variables;
     // console.log(req.session);
 
+
     let newResponse = new Response({
       usertoken: token,
       variables: variables,

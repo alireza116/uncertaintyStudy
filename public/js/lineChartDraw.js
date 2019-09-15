@@ -91,11 +91,19 @@ function LineChartDraw(chartID,variables){
         .attr("r",width/2)
         // .attr("transform","translate("+-margin.left+","+-margin.top+")"); // position the y-centre
 
-    svg.append("text").attr("id","x label")
-        .attr("text-anchor","start")
-        .attr("x",width+ 10)
-        .attr("y",height/2+10)
-        .text(variables[0]);
+    // svg.append("text").attr("id","x label")
+    //     .attr("text-anchor","start")
+    //     .attr("x",width+ 10)
+    //     .attr("y",height/2+10)
+    //     .text(variables[0]);
+    var variableSplit = variables[0].split(" ");
+    variableSplit.forEach(function(v,i){
+        svg.append("text").attr("id","x label")
+            .attr("text-anchor","start")
+            .attr("x",width+ 10)
+            .attr("y",height/2+((i+1)*10+(i*5)))
+            .text(v);
+    });
 
     svg.append("text").attr("id","y label")
         .attr("text-anchor","middle")
@@ -214,6 +222,22 @@ this.createChart = function(corr){
                 var otherAngle = posDegree - 2 *angle1Diff;
                 minAngle = posDegree;
                 maxAngle = otherAngle;
+                // if (minAngle > 45) {
+                //     minAngle = 45
+                // } else if (minAngle < -45){
+                //     minAngle = -45
+                // }
+                console.log(minAngle);
+                console.log(maxAngle);
+
+                if (maxAngle > 45) {
+                    maxAngle = 45
+                } else if (maxAngle < -45) {
+                    maxAngle = -45
+                }
+                console.log(minAngle);
+                console.log(maxAngle);
+
                 selectedUncertainty = [slopeScale.invert(minAngle),slopeScale.invert(maxAngle)];
                 var pos3Radians = otherAngle * Math.PI / 180;
                 var pos4Radians = (otherAngle+180) * Math.PI /180;
@@ -237,7 +261,7 @@ this.createChart = function(corr){
                 dataset.push(centerPos);
                 uncertainty.data([dataset]).attr("d",valueLine);
                 uncertainty.attr("transform","translate("+width/2+","+ (-height/2)+")")
-                makeUncertainty(50);
+                makeUncertainty(75);
                 console.log(beliefData);
             }
         });
@@ -245,6 +269,7 @@ this.createChart = function(corr){
     function makeUncertainty(n){
         // var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/8);
         var uniform = d3.randomUniform(minAngle,maxAngle);
+
         // var opRange = [maxAngle-(minAngle+maxAngle)/2,0];
         // if (maxAngle > minAngle){
         //     var opRange = [0,maxAngle-selectedAngle];
@@ -261,7 +286,7 @@ this.createChart = function(corr){
             .exponent(0.5)
             .domain(opRange)
             // .range([0.01,1]);
-            .range([1,0.01]);
+            .range([1,0.05]);
         uncertaintyPaths.selectAll("path").remove();
         // console.log(opRange);
         // console.log([minAngle,maxAngle]);
