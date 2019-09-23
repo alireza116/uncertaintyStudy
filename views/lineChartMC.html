@@ -116,6 +116,7 @@
         <p style="margin:0">Press the C key for the left line and the M key for the right line.
         The <span id="choiceColor"></span> line is your previous choice, the <span id="newColor"></span> line is a new option. 
         Always compare and choose the line that is more likely to represent the relationship between the variables.</p>
+        <p >choices made: <span id="counter">0</span>/100</p>
     </div>
     <div class="chartChoice">
         <div class="row charts">
@@ -199,6 +200,7 @@
                 choices.push(choice);
                 slopePairs.push(slopes);
                 keyboardHits.push("m");
+                $("#counter").text(choices.length);
                 var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
@@ -232,6 +234,7 @@
                 choices.push(choice);
                 slopePairs.push(slopes);
                 keyboardHits.push("c");
+                $("#counter").text(choices.length);
                 var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
