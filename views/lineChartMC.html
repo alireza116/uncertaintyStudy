@@ -172,6 +172,10 @@
         var newColor = "orange";
         var decay = false;
         var beliefData = {};
+        var choices = [];
+        var std;
+        var slopePairs = [];
+        var keyboardHits = [];
         var stdScale = d3.scaleLinear().domain([0,100]).range([0.4,0.01]);
         $("#choiceColor").text(choiceColor).css("color",choiceColor);
         $("#newColor").text(newColor).css("color",newColor);
@@ -183,8 +187,7 @@
         var chart2 = new LineChartMC("chart2",variables);
         chart1.createChart(slopes[0]);
         chart2.createChart(slopes[1]);
-        var choices = [];
-        var std;
+
         document.addEventListener("keypress",function(event){
             var keyCode = event.keyCode;
             keyCode = String.fromCharCode(keyCode);
@@ -194,6 +197,8 @@
             if (keyCode==="m"){
                 choice = slopes[1];
                 choices.push(choice);
+                slopePairs.push(slopes);
+                keyboardHits.push("m");
                 var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
@@ -225,6 +230,8 @@
             } else if (keyCode==="c"){
                 choice = slopes[0];
                 choices.push(choice);
+                slopePairs.push(slopes);
+                keyboardHits.push("c");
                 var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
@@ -259,6 +266,8 @@
 
             if (choices.length === 100){
                 beliefData["belief"] = choices;
+                beliefData["choicePairs"] = slopePairs;
+                beliefData["keyboardHits"] = keyboardHits;
                 console.log(beliefData);
                 $.post("/api/study",data=beliefData ,
                     success=function(d){
