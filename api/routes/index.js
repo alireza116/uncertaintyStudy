@@ -113,6 +113,8 @@ router.get("/api/consent", function(req, res) {
     // group = 2;
     req.session.userid = token;
     req.session.completed = false;
+    req.session.postQuestion = false;
+    req.session.preQuestion = false;
     req.session.state = state;
     req.session.states = states;
     req.session.varIndex = 0;
@@ -190,6 +192,7 @@ router.post("/api/pre", function(req, res) {
     function(err, doc) {
       if (err) return res.send(500, { error: err });
       // console.log("yeaah");
+        req.session.preQuestion = true;
       return res.send("successfully saved!");
     }
   );
@@ -207,6 +210,7 @@ router.post("/api/post", function(req, res) {
     function(err, doc) {
       if (err) return res.send(500, { error: err });
       console.log("yeaah");
+      req.session.postQuestion = true;
       return res.send("successfully saved!");
     }
   );
@@ -322,7 +326,15 @@ router.get("/next", function(req, res) {
 });
 
 router.get("/debrief", function(req, res) {
-  res.render("debrief.html");
+    if (req.session.completed && req.session.postQuestion && req.session.preQuestion){
+        res.render("debrief.html");
+    } else if (!req.session.preQuestion) {
+        res.redirect("preforms")
+    } else if (!req.session.postQuestion && !req.session.completed) {
+        res.redirect("study")
+    } else if (!req.session.postQuestion){
+        res.redirect("postforms")
+    }
 });
 
 function shuffle(array) {
