@@ -81,8 +81,8 @@ let variables = shuffle([
 
 
 
-let states = shuffle(["mc","draw"]);
-// let states = ["draw","mc"];
+// let states = shuffle(["mc","draw"]);
+let states = ["draw","mc"];
 let stateIndex = 0;
 // const numTopics = 3;
 
@@ -312,12 +312,12 @@ router.get("/next", function(req, res) {
     console.log(req.session.state);
     console.log(variables[req.session.varIndex]);
     req.session.varIndex+=1;
-    if (req.session.varIndex >= variables.length && stateIndex === 0) {
+    if (req.session.varIndex >= variables.length && req.session.stateIndex === 0) {
         req.session.stateIndex +=1;
         req.session.varIndex = 0;
         req.session.state = req.session.states[req.session.stateIndex];
         res.redirect("/intermission");
-    } else if (req.session.varIndex >= variables.length && stateIndex === 1) {
+    } else if (req.session.varIndex >= variables.length && req.session.stateIndex === 1) {
         req.session.completed = true;
         res.redirect("/postforms");
 
