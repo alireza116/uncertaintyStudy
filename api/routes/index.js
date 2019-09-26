@@ -81,8 +81,8 @@ let variables = shuffle([
 
 
 
-// let states = shuffle(["mc","draw"]);
-let states = ["draw","mc"];
+let states = shuffle(["mc","draw"]);
+// let states = ["draw","mc"];
 let stateIndex = 0;
 // const numTopics = 3;
 
