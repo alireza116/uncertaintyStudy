@@ -71,13 +71,13 @@ function getRandomInt(max) {
 // const allData = JSON.parse(
 //   fs.readFileSync(`public/data/finalData.json`, "utf8")
 // );
-let variables = shuffle([
+let variables = [
   ["Yearly Income", "Height"],
   ["Weight of a Diamond", "Price of a Diamond"],
   ["Yearly Income","Stress"],
   ["Vaccination Rate", "Rate of Illness"],
   ["Exercise amount","Body Weight"]
-]);
+];
 
 
 
@@ -100,13 +100,13 @@ router.get("/api/userinfo", function(req, res) {
 
 
 router.get("/api/data", function(req, res) {
-  res.status(200).send(variables[req.session.varIndex]);
+  res.status(200).send(req.session.variables[req.session.varIndex]);
 });
 
 router.get("/api/consent", function(req, res) {
   // 0 is low 1 is high 2 is control //
   // for order 0 is basic anchoring first, then with map visualization and 1 is map visualization first and then basic anchoring//
-
+    states = shuffle(states);
   if (!req.session.userid) {
     let token = randomstring.generate(8);
     let state = states[stateIndex];
@@ -120,13 +120,12 @@ router.get("/api/consent", function(req, res) {
     req.session.states = states;
     req.session.stateIndex = stateIndex;
     req.session.varIndex = 0;
-    req.session.variables = variables;
+    req.session.variables = shuffle(variables);
     // console.log(req.session);
-
 
     let newResponse = new Response({
       usertoken: token,
-      variables: variables,
+      variables: req.session.variables,
       states :states
     });
 
@@ -164,7 +163,7 @@ router.post("/api/study", function(req, res) {
   let data = req.body;
 
   data["mode"] = req.session.state;
-  data["variables"] = variables[req.session.varIndex];
+  data["variables"] = req.session.variables[req.session.varIndex];
 
 
 
@@ -310,7 +309,7 @@ router.get("/study", function(req, res) {
 
 router.get("/next", function(req, res) {
     console.log(req.session.state);
-    console.log(variables[req.session.varIndex]);
+    console.log(req.session.variables[req.session.varIndex]);
     req.session.varIndex+=1;
     if (req.session.varIndex >= variables.length && req.session.stateIndex === 0) {
         req.session.stateIndex +=1;
