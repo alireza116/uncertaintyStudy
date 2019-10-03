@@ -10,8 +10,8 @@ function LineChartDraw(chartID,variables){
     var cwidth = $("#"+chartID).width();
     var cheight = $("#"+chartID).height();
     cwidth = cheight;
-    console.log(cwidth);
-    console.log(cheight);
+    //console.log(cwidth);
+    //console.log(cheight);
     var margin = {top: 70, right: 70, bottom: 70, left: 70}
         , width = cwidth - margin.left - margin.right // Use the window's width
         , height = cheight - margin.top - margin.bottom; // Use the window's height
@@ -129,7 +129,7 @@ this.createChart = function(corr){
 //                console.log(focusPoint);
     dataset.push(pos);
     dataset.push(pos1);
-    console.log(dataset);
+    //console.log(dataset);
     lineG = svg.append("g").attr("class","lineContainer");
     // lineG.attr("clip-path","url(#rect-clip)");
 //                console.log(focusNumber);
@@ -166,14 +166,14 @@ this.createChart = function(corr){
         .attr("stroke", 0)
         .attr("fill-opacity",0)
         .on("click", function() {
-            console.log("kir");
+            //console.log("kir");
             if (!selected){
                 selected = true;
                 beliefData["belief"] = slopeScale.invert(selectedAngle)
             } else if(!uncertaintySelected) {
                 uncertaintySelected = true;
                 beliefData["uncertainty"] = selectedUncertainty
-                console.log(beliefData)
+                //console.log(beliefData)
             }
 
 
@@ -227,16 +227,16 @@ this.createChart = function(corr){
                 // } else if (minAngle < -45){
                 //     minAngle = -45
                 // }
-                console.log(minAngle);
-                console.log(maxAngle);
+                //console.log(minAngle);
+                //console.log(maxAngle);
 
                 if (maxAngle > 45) {
                     maxAngle = 45
                 } else if (maxAngle < -45) {
                     maxAngle = -45
                 }
-                console.log(minAngle);
-                console.log(maxAngle);
+                //console.log(minAngle);
+                //console.log(maxAngle);
 
                 selectedUncertainty = [slopeScale.invert(minAngle),slopeScale.invert(maxAngle)];
                 var pos3Radians = otherAngle * Math.PI / 180;
@@ -262,12 +262,12 @@ this.createChart = function(corr){
                 uncertainty.data([dataset]).attr("d",valueLine);
                 uncertainty.attr("transform","translate("+width/2+","+ (-height/2)+")")
                 makeUncertainty(200);
-                console.log(beliefData);
+                //console.log(beliefData);
             }
         });
 
     function makeUncertainty(n){
-        var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/(1.97*2));
+        var uniform = d3.randomNormal(selectedAngle,(maxAngle-selectedAngle)/1.97);
         // var uniform = d3.randomUniform(minAngle,maxAngle);
 
         // var opRange = [maxAngle-(minAngle+maxAngle)/2,0];
@@ -307,10 +307,16 @@ this.createChart = function(corr){
                 var pos1 = {x:posx1,y:posy1};
                 dataset.push(pos);
                 dataset.push(pos1);
-                uncertaintyPaths.append("path").data([dataset]).attr("d",valueLine).attr("class","uncertaintyPaths").attr("fill","none").attr("stroke","darkgrey").attr("stroke-opacity",function(){
+                uncertaintyPaths.append("path").data([dataset])
+                  .attr("d",valueLine)
+                  .attr("class","uncertaintyPaths")
+                  .attr("fill","none")
+                  .attr("stroke","black")
+                  .attr("stroke-width",3)
+                  .attr("stroke-opacity",function(){
                     // return opScale(Math.abs(posDegree-Math.abs((minAngle+maxAngle)/2)));
                     // return opScale(Math.abs(posDegree-selectedAngle));
-                    return 0.1;
+                    return 0.04;
                 });
             }
 
