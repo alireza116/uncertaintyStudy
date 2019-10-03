@@ -220,8 +220,11 @@ this.createChart = function(corr){
                 var pos2Radians = (posDegree + 180) * Math.PI / 180;
                 var angle1Diff = posDegree - selectedAngle;
                 var otherAngle = posDegree - 2 *angle1Diff;
-                minAngle = posDegree;
-                maxAngle = otherAngle;
+                minAngle = d3.min([posDegree,otherAngle]);
+                maxAngle = d3.max([posDegree,otherAngle]);
+
+
+
                 // if (minAngle > 45) {
                 //     minAngle = 45
                 // } else if (minAngle < -45){
@@ -232,9 +235,21 @@ this.createChart = function(corr){
 
                 if (maxAngle > 45) {
                     maxAngle = 45
-                } else if (maxAngle < -45) {
+                }
+                if (maxAngle < -45) {
                     maxAngle = -45
                 }
+                if (minAngle < -45) {
+                    minAngle = -45
+                }
+                if (minAngle > 45) {
+                    minAngle = 45
+                }
+
+                console.log("ming angle");
+                console.log(minAngle);
+                console.log("max angle");
+                console.log(maxAngle);
                 //console.log(minAngle);
                 //console.log(maxAngle);
 
@@ -267,7 +282,9 @@ this.createChart = function(corr){
         });
 
     function makeUncertainty(n){
-        var uniform = d3.randomNormal(selectedAngle,(maxAngle-selectedAngle)/1.97);
+        // var uniform = d3.randomNormal(selectedAngle,(maxAngle-selectedAngle)/1.97);
+        var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/(2*1.97));
+
         // var uniform = d3.randomUniform(minAngle,maxAngle);
 
         // var opRange = [maxAngle-(minAngle+maxAngle)/2,0];

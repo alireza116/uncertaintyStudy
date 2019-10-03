@@ -99,6 +99,7 @@ router.get("/api/userinfo", function(req, res) {
 });
 
 
+
 router.get("/api/data", function(req, res) {
   res.status(200).send(req.session.variables[req.session.varIndex]);
 });
