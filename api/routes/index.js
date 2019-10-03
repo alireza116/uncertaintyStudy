@@ -86,7 +86,7 @@ let states = ["mc","draw"];
 let stateIndex = 0;
 // const numTopics = 3;
 
-const Response = mongoose.model("uncertaintyBelief", responseSchema);
+const Response = mongoose.model("uncertainty2Belief", responseSchema);
 
 router.get("/api/userinfo", function(req, res) {
   if (req.session.userid) {
