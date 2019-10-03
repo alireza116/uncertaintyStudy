@@ -261,14 +261,14 @@ this.createChart = function(corr){
                 dataset.push(centerPos);
                 uncertainty.data([dataset]).attr("d",valueLine);
                 uncertainty.attr("transform","translate("+width/2+","+ (-height/2)+")")
-                makeUncertainty(75);
+                makeUncertainty(200);
                 console.log(beliefData);
             }
         });
 
     function makeUncertainty(n){
-        // var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/8);
-        var uniform = d3.randomUniform(minAngle,maxAngle);
+        var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/(1.97*2));
+        // var uniform = d3.randomUniform(minAngle,maxAngle);
 
         // var opRange = [maxAngle-(minAngle+maxAngle)/2,0];
         // if (maxAngle > minAngle){
@@ -281,37 +281,42 @@ this.createChart = function(corr){
 
         // console.log(opRange);
         var opScale = d3
-            .scalePow()
             // .scalePow()
-            .exponent(0.5)
+            .scaleLinear()
+            // .scalePow()
+            // .exponent(0.5)
             .domain(opRange)
             // .range([0.01,1]);
             .range([1,0.05]);
         uncertaintyPaths.selectAll("path").remove();
         // console.log(opRange);
         // console.log([minAngle,maxAngle]);
-        console.log("uncertainty paths");
+        // console.log("uncertainty paths");
         for (var i=0; i <n;i++){
             var dataset =[];
             var posDegree = uniform();
-            // console.log(posDegree);
-            var pos1Radians = posDegree * Math.PI / 180;
-            var pos2Radians = (posDegree + 180) * Math.PI / 180;
-            var posy= Math.sin(pos1Radians) /2;
-            var posx = Math.cos(pos1Radians) /2;
-            var posy1 = Math.sin(pos2Radians)/2;
-            var posx1 = Math.cos(pos2Radians)/2;
-            var pos = {x:posx,y:posy};
-            var pos1 = {x:posx1,y:posy1};
-            dataset.push(pos);
-            dataset.push(pos1);
-            uncertaintyPaths.append("path").data([dataset]).attr("d",valueLine).attr("class","uncertaintyPaths").attr("fill","none").attr("stroke","darkgrey").attr("stroke-opacity",function(){
-                // return opScale(Math.abs(posDegree-Math.abs((minAngle+maxAngle)/2)));
-                return opScale(Math.abs(posDegree-selectedAngle));
-                // return 0.4
-            });
-            uncertaintyPaths.attr("transform","translate("+width/2+","+ (-height/2)+")");
+            if (posDegree > minAngle && posDegree < maxAngle){
+                // console.log(posDegree);
+                var pos1Radians = posDegree * Math.PI / 180;
+                var pos2Radians = (posDegree + 180) * Math.PI / 180;
+                var posy= Math.sin(pos1Radians) /2;
+                var posx = Math.cos(pos1Radians) /2;
+                var posy1 = Math.sin(pos2Radians)/2;
+                var posx1 = Math.cos(pos2Radians)/2;
+                var pos = {x:posx,y:posy};
+                var pos1 = {x:posx1,y:posy1};
+                dataset.push(pos);
+                dataset.push(pos1);
+                uncertaintyPaths.append("path").data([dataset]).attr("d",valueLine).attr("class","uncertaintyPaths").attr("fill","none").attr("stroke","darkgrey").attr("stroke-opacity",function(){
+                    // return opScale(Math.abs(posDegree-Math.abs((minAngle+maxAngle)/2)));
+                    // return opScale(Math.abs(posDegree-selectedAngle));
+                    return 0.1;
+                });
+            }
+
+
         }
+        uncertaintyPaths.attr("transform","translate("+width/2+","+ (-height/2)+")");
     }
 
 

@@ -81,7 +81,7 @@ let variables = [
 
 
 
-let states = shuffle(["mc","draw"]);
+let states = ["mc","draw"];
 // let states = ["draw","mc"];
 let stateIndex = 0;
 // const numTopics = 3;
@@ -106,7 +106,7 @@ router.get("/api/data", function(req, res) {
 router.get("/api/consent", function(req, res) {
   // 0 is low 1 is high 2 is control //
   // for order 0 is basic anchoring first, then with map visualization and 1 is map visualization first and then basic anchoring//
-    states = shuffle(states);
+
   if (!req.session.userid) {
     let token = randomstring.generate(8);
     let state = states[stateIndex];
@@ -116,8 +116,8 @@ router.get("/api/consent", function(req, res) {
     req.session.completed = false;
     req.session.postQuestion = false;
     req.session.preQuestion = false;
-    req.session.state = state;
-    req.session.states = states;
+    req.session.states = shuffle(states);
+    req.session.state = req.session.states[stateIndex];
     req.session.stateIndex = stateIndex;
     req.session.varIndex = 0;
     req.session.variables = shuffle(variables);
