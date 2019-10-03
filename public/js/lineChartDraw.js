@@ -283,7 +283,11 @@ this.createChart = function(corr){
 
     function makeUncertainty(n){
         // var uniform = d3.randomNormal(selectedAngle,(maxAngle-selectedAngle)/1.97);
-        var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/(2*1.97));
+        //var uniform = d3.randomNormal(selectedAngle,(maxAngle-minAngle)/(2*1.97));
+        var min_d = Math.abs(minAngle - selectedAngle);
+        var max_d = Math.abs(maxAngle - selectedAngle);
+        var d = d3.max([min_d, max_d]);
+        var uniform = d3.randomNormal(selectedAngle,d/1.97);
 
         // var uniform = d3.randomUniform(minAngle,maxAngle);
 
