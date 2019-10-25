@@ -200,8 +200,8 @@
         chart2.createChart(slopes[1]);
 
         document.addEventListener("keypress",function(event){
-            var keyCode = event.keyCode;
-            keyCode = String.fromCharCode(keyCode);
+            //var keyCode = event.keyCode;
+            var keyCode = String.fromCharCode(event.keyCode);
             var choice;
 
             if (keyCode==="m"){
@@ -265,13 +265,13 @@
 
                 if (uniform()<-0.5){
                     slopes = [slopes[1],slopes[0]];
-                    chart1.highlightLine(choiceColor);
-                    //chart1.highlightLine(newColor);
+                    //chart1.highlightLine(choiceColor);
+                    chart1.highlightLine(newColor);
                     chart2.highlightLine(newColor);
                 } else {
-                    chart2.highlightLine(choiceColor);
+                    //chart2.highlightLine(choiceColor);
                     chart1.highlightLine(newColor);
-                    //chart2.highlightLine(newColor);
+                    chart2.highlightLine(newColor);
                 }
 
 
@@ -297,13 +297,13 @@
 
                 if (uniform()<-0.5){
                     slopes = [slopes[1],slopes[0]];
-                    chart2.highlightLine(choiceColor);
+                    //chart2.highlightLine(choiceColor);
                     chart1.highlightLine(newColor);
-                    //chart2.highlightLine(newColor);
+                    chart2.highlightLine(newColor);
                     console.log("switch");
                 } else{
-                    chart1.highlightLine(choiceColor);
-                    //chart1.highlightLine(newColor);
+                    //chart1.highlightLine(choiceColor);
+                    chart1.highlightLine(newColor);
                     chart2.highlightLine(newColor);
                 }
                 console.log(slopes);
@@ -318,6 +318,17 @@
                     .transition()
                     .attr("fill","black")
                     .duration(500);
+            }
+
+            // catch trials
+            if ((n > 0) & (n % 25 == 1)) {
+                if (Math.random() < .5) {
+                    chart1.setOpacity(0);
+                    console.log('catch trial, hiding chart1')
+                } else {
+                    chart2.setOpacity(0);
+                    console.log('catch trial, hiding chart1')
+                }
             }
 
 

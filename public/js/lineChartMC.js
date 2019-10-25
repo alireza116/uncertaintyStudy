@@ -175,7 +175,12 @@ this.highlightLine = function(color){
     // xAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
     // yAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
     line.attr("stroke",color);
+    line.attr("opacity", 1);
 
+}
+
+this.setOpacity = function(alpha){
+    line.attr("opacity", alpha)
 }
 
 
