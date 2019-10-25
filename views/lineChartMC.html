@@ -167,18 +167,27 @@
         var variables = data;
 
         var uniform = d3.randomUniform(-1,1);
-        var slope1 =d3.randomUniform(-1,0)();
+        var slope1 = d3.randomUniform(-1,0)();
         var slope2 = d3.randomUniform(0,1)();
         var slopes = [slope1,slope2];
         var choiceColor = "red";
         var newColor = "orange";
-        var decay = false;
+        //var decay = false;
         var beliefData = {};
         var choices = [];
+        var chose_same = [];
         var std;
         var slopePairs = [];
         var keyboardHits = [];
-        var stdScale = d3.scaleLinear().domain([0,100]).range([0.4,0.01]);
+
+        //var stdScale = d3.scaleLinear().domain([0,100]).range([0.4,0.01]);
+        
+        // starting std of proposal distribution
+        var std = .4;
+        var std_min = .1;
+        var std_max = .7;
+        console.log('starting std:', std);
+
         $("#choiceColor").text(choiceColor).css("color",choiceColor);
         $("#newColor").text(newColor).css("color",newColor);
 
@@ -194,15 +203,57 @@
             var keyCode = event.keyCode;
             keyCode = String.fromCharCode(keyCode);
             var choice;
-            std = decay ? stdScale(choices.length) : 0.2;
-            console.log(std);
+
             if (keyCode==="m"){
                 choice = slopes[1];
-                choices.push(choice);
-                slopePairs.push(slopes);
+            } else {
+                choice = slopes[0];
+            }
+            // record whether choice was same as previous
+            if (choices.length > 0) {
+                if (choice == choices[choices.length-1]) {
+                    console.log('chose same');
+                    chose_same.push(1);
+                } else {
+                    console.log('chose different');
+                    chose_same.push(0);
+                }
+
+            }
+
+            choices.push(choice);
+            slopePairs.push(slopes);
+
+            // adjust std of proposal distribution based on 
+            // acceptance rate in past 10 trials
+            n = choices.length;
+            if ((n > 10) & (n % 10 == 1)) {
+
+                // acceptance rate over last 10 trials
+                var accept_rate = 1 - d3.mean(chose_same.slice(n - 10, n));
+                if (accept_rate < .2) {
+                    std = d3.max([std_min, std - .1]);
+                }
+                if (accept_rate > .5) {
+                    std = d3.min([std_max, std + .1]);
+                }
+                console.log('accept_rate:', accept_rate);
+                console.log('new std:', std);
+            }
+
+            // sample from proposal distribution
+            if ((n > 20) & (n % 20 == 1)) {
+                console.log('uniform proposal');
+                var choiceSample = uniform();
+            } else {
+                var choiceSample = d3.randomNormal(choice,std)();
+            }
+            
+
+            if (keyCode==="m"){
+
                 keyboardHits.push("m");
                 $("#counter").text(choices.length);
-                var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
                 } else if (choiceSample <-1) {
@@ -210,13 +261,17 @@
                 }
                 slopes = [choiceSample,choice];
                 console.log(slopes);
+                
+
                 if (uniform()<-0.5){
                     slopes = [slopes[1],slopes[0]];
                     chart1.highlightLine(choiceColor);
+                    //chart1.highlightLine(newColor);
                     chart2.highlightLine(newColor);
                 } else {
                     chart2.highlightLine(choiceColor);
                     chart1.highlightLine(newColor);
+                    //chart2.highlightLine(newColor);
                 }
 
 
@@ -231,12 +286,8 @@
                     .duration(500);
 
             } else if (keyCode==="c"){
-                choice = slopes[0];
-                choices.push(choice);
-                slopePairs.push(slopes);
                 keyboardHits.push("c");
                 $("#counter").text(choices.length);
-                var choiceSample = d3.randomNormal(choice,std)();
                 if (choiceSample > 1) {
                     choiceSample = 1;
                 } else if (choiceSample <-1) {
@@ -248,9 +299,11 @@
                     slopes = [slopes[1],slopes[0]];
                     chart2.highlightLine(choiceColor);
                     chart1.highlightLine(newColor);
-                    console.log("swithc");
+                    //chart2.highlightLine(newColor);
+                    console.log("switch");
                 } else{
                     chart1.highlightLine(choiceColor);
+                    //chart1.highlightLine(newColor);
                     chart2.highlightLine(newColor);
                 }
                 console.log(slopes);
