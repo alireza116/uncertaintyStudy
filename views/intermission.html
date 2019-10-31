@@ -24,7 +24,7 @@
 <body>
 <div class="container bg-light">
     <form class="questions">
-        <h1>Which of these sets of the variables was the last one you answered?</h1>
+        <h3>Which of these sets of the variables was the last one you answered?</h3>
         <fieldset class="form-group" style="background: #f9f9f9;" >
             <label for="lastvar">Select an option</label>
             <select class="form-control" id="lastvar" name="lastvar">
@@ -37,6 +37,28 @@
             </select>
 
         </fieldset>
+
+        <h3>Imagine you found yourself in the following 
+            situation: <i>"On the morning of an important job interview, you wake up with fever and chills."</i></h3>
+        <fieldset class="form-group" >
+            <label for="freeform_1" class="col-form-label"> 
+            What is a potential course of action that you could take in this situation?</label>
+            <div class="col-10">
+                <input class="form-control" type="text" name="freeform_1" id="freeform_1">
+            </div>
+        </fieldset>
+        
+        <h3>Imagine you found yourself in the following 
+            situation: <i>"You stop by a store to grab an item you need. You are in a hurry but the cashier
+            is nowhere to be found."</i></h3>
+
+        <fieldset class="form-group" >
+            <label for="freeform_2" class="col-form-label">What is a potential course of action that you could take in this situation?</label>
+            <div class="col-10">
+                <input class="form-control" type="text" name="freeform_2" id="freeform_2">
+            </div>
+        </fieldset>
+
         <button type="submit" class="btn btn-primary" id="presubmit">Submit</button>
 
     </form>
@@ -110,7 +132,7 @@
         };
         console.log(newData);
         newData[data[0]["name"]] = data[0]["value"];
-        if (data.length === 1) {
+        if (data.length === 3) {
             $.post("/api/intermission",newData,
                 success=function(d){
                     console.log(d);
