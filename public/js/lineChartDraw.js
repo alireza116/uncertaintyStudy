@@ -12,7 +12,7 @@ function LineChartDraw(chartID,variables){
     cwidth = cheight;
     //console.log(cwidth);
     //console.log(cheight);
-    var margin = {top: 70, right: 70, bottom: 70, left: 70}
+    var margin = {top: 80, right: 80, bottom: 80, left: 80}
         , width = cwidth - margin.left - margin.right // Use the window's width
         , height = cheight - margin.top - margin.bottom; // Use the window's height
     var slopeScale = d3.scaleLinear().domain([1,-1]).range([45,-45]);
@@ -96,7 +96,16 @@ function LineChartDraw(chartID,variables){
     //     .attr("x",width+ 10)
     //     .attr("y",height/2+10)
     //     .text(variables[0]);
-    var variableSplit = variables[0].split(" ");
+
+
+    var xstr;
+    if (variables[0].indexOf("of a") != -1) {
+        xstr = variables[0].replace("of a", "of");
+    } else {
+        xstr = variables[0];
+    }
+
+    var variableSplit = (xstr + " (high)").split(" ");
     variableSplit.forEach(function(v,i){
         svg.append("text").attr("id","x label")
             .attr("text-anchor","start")
@@ -105,13 +114,33 @@ function LineChartDraw(chartID,variables){
             .text(v);
     });
 
+    var variableSplit = (xstr + " (low)").split(" ");
+    variableSplit.forEach(function(v,i){
+        svg.append("text").attr("id","x label")
+            .attr("text-anchor","end")
+            .attr("x",-10)
+            .attr("y",height/2+((i+1)*10+(i*5)))
+            .text(v);
+    });
+
+    var ystr;
+    if (variables[1].indexOf("of a") != -1) {
+        ystr = variables[1].replace("of a", "of");
+    } else {
+        ystr = variables[1];
+    }
+
     svg.append("text").attr("id","y label")
         .attr("text-anchor","middle")
         .attr("x",width/2 )
         .attr("y",-10)
-        .text(variables[1]);
+        .text(ystr + " (high)");
 
-
+    svg.append("text").attr("id","y label")
+        .attr("text-anchor","middle")
+        .attr("x",width/2 )
+        .attr("y",height +20)
+        .text(ystr + " (low)");
 
 
     // var pos = {x:0,y:0};

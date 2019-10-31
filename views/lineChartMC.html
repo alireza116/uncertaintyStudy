@@ -113,10 +113,11 @@
     <div class="title">
         <p>Which of the lines below best represents the relationship between</p>
         <p><span id="varX"></span> and <span id="varY"></span>?</p>
-        <p style="margin:0">Press the C key for the left line and the M key for the right line.
-        The <span id="choiceColor"></span> line is your previous choice, the <span id="newColor"></span> line is a new option. 
+        <p style="margin:0">Press the C key for the left line and the M key for the right line.<br />If only one line appears, press the
+        corresponding key to choose it and continue.<br />
+        <!--The <span id="choiceColor"></span> line is your previous choice, the <span id="newColor"></span> line is a new option.-->
         Always compare and choose the line that is more likely to represent the relationship between the variables.</p>
-        <p >choices made: <span id="counter">0</span>/100</p>
+        <p style="margin-top:10px">choices made: <span id="counter">0</span>/100</p>
     </div>
     <div class="chartChoice">
         <div class="row charts">
@@ -127,11 +128,13 @@
                 <!--<div  style="margin: 0 auto"></div>-->
             </div>
         </div>
+        <!--
         <div class="row choices">
             <div class="col">
                 <button class="btn btn-secondary identical">They look identical to me</button>
             </div>
         </div>
+        -->
     </div>
 
 </div>
@@ -177,6 +180,9 @@
         var choices = [];
         var chose_same = [];
         var std;
+        var stds = [];
+        var accept_rates = [];
+        var catch_trials = [];
         var slopePairs = [];
         var keyboardHits = [];
 
@@ -186,14 +192,13 @@
         var std = .4;
         var std_min = .1;
         var std_max = .7;
-        console.log('starting std:', std);
+        stds.push(std);
 
         $("#choiceColor").text(choiceColor).css("color",choiceColor);
         $("#newColor").text(newColor).css("color",newColor);
-
         $("#varX").text(variables[0]);
         $("#varY").text(variables[1]);
-        console.log(slopes);
+        
         var chart1 =  new LineChartMC("chart1",variables);
         var chart2 = new LineChartMC("chart2",variables);
         chart1.createChart(slopes[0]);
@@ -212,17 +217,16 @@
             // record whether choice was same as previous
             if (choices.length > 0) {
                 if (choice == choices[choices.length-1]) {
-                    console.log('chose same');
                     chose_same.push(1);
                 } else {
-                    console.log('chose different');
                     chose_same.push(0);
                 }
 
             }
-
             choices.push(choice);
             slopePairs.push(slopes);
+
+
 
             // adjust std of proposal distribution based on 
             // acceptance rate in past 10 trials
@@ -237,17 +241,14 @@
                 if (accept_rate > .5) {
                     std = d3.min([std_max, std + .1]);
                 }
+                accept_rates.push(accept_rate);
+                stds.push(std);
                 console.log('accept_rate:', accept_rate);
                 console.log('new std:', std);
             }
 
             // sample from proposal distribution
-            if ((n > 20) & (n % 20 == 1)) {
-                console.log('uniform proposal');
-                var choiceSample = uniform();
-            } else {
-                var choiceSample = d3.randomNormal(choice,std)();
-            }
+            var choiceSample = d3.randomNormal(choice,std)();
             
 
             if (keyCode==="m"){
@@ -277,6 +278,8 @@
 
                 chart1.updateChart(slopes[0]);
                 chart2.updateChart(slopes[1]);
+
+                
                 d3.select("#M")
                     .transition()
                     .attr("fill","red")
@@ -320,25 +323,33 @@
                     .duration(500);
             }
 
+            /*
             // catch trials
-            if ((n > 0) & (n % 25 == 1)) {
+            if ((n == 12) | (n == 36) | (n == 72)) {
                 if (Math.random() < .5) {
-                    chart1.setOpacity(0);
+                    chart2.setOpacity(0);
+                    catch_trials.push([n, 0, "m"]);
                     console.log('catch trial, hiding chart1')
                 } else {
-                    chart2.setOpacity(0);
+                    chart1.setOpacity(0);
+                    catch_trials.push([n, 1, "c"]);
                     console.log('catch trial, hiding chart1')
                 }
             }
+            */
 
 
             if (choices.length === 100){
                 beliefData["belief"] = choices;
                 beliefData["choicePairs"] = slopePairs;
+                beliefData["choseSame"] = chose_same;
+                beliefData["proposalSD"] = stds;
+                beliefData["acceptRates"] = accept_rates;
+                beliefData["catchTrials"] = catch_trials;
                 beliefData["keyboardHits"] = keyboardHits;
-                console.log(beliefData);
                 beliefData['startTime'] = startTime;
                 beliefData["endTime"] = Date.now();
+
                 $.post("/api/study",data=beliefData ,
                     success=function(d){
                         console.log(d);
@@ -350,6 +361,7 @@
             }
         });
 
+        /*
         $(".identical").click(function(event){
             event.preventDefault();
             var choiceRandom = Math.floor(d3.randomUniform(0,2)());
@@ -397,7 +409,7 @@
 
             }
 
-        })
+        })*/
     })
 
 

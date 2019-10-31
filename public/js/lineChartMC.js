@@ -65,15 +65,15 @@ function LineChartMC(chartID,variables){
         svg.append("text").attr("id","M")
             .attr("text-anchor","middle")
             .attr("x",width/2)
-            .attr("y",height+40)
-            .attr("font-size",40)
+            .attr("y",height+80)
+            .attr("font-size",50)
             .text("M");
     } else {
         svg.append("text").attr("id","C")
             .attr("text-anchor","middle")
             .attr("x",width/2)
-            .attr("y",height+40)
-            .attr("font-size",40)
+            .attr("y",height+80)
+            .attr("font-size",50)
             .text("C");
     }
 
@@ -100,7 +100,14 @@ function LineChartMC(chartID,variables){
         .attr("transform","translate("+-margin.left+","+-margin.top+")"); // position the y-centre
 
 
-    var variableSplit = variables[0].split(" ");
+    var xstr;
+    if (variables[0].indexOf("of a") != -1) {
+        xstr = variables[0].replace("of a", "of");
+    } else {
+        xstr = variables[0];
+    }
+
+    var variableSplit = (xstr + " (high)").split(" ");
     variableSplit.forEach(function(v,i){
         svg.append("text").attr("id","x label")
             .attr("text-anchor","start")
@@ -109,12 +116,34 @@ function LineChartMC(chartID,variables){
             .text(v);
     });
 
+    var variableSplit = (xstr + " (low)").split(" ");
+    variableSplit.forEach(function(v,i){
+        svg.append("text").attr("id","x label")
+            .attr("text-anchor","end")
+            .attr("x",-10)
+            .attr("y",height/2+((i+1)*10+(i*5)))
+            .text(v);
+    });
+
+    var ystr;
+    if (variables[1].indexOf("of a") != -1) {
+        ystr = variables[1].replace("of a", "of");
+    } else {
+        ystr = variables[1];
+    }
 
     svg.append("text").attr("id","y label")
         .attr("text-anchor","middle")
         .attr("x",width/2 )
         .attr("y",-10)
-        .text(variables[1]);
+        .text(ystr + " (high)");
+
+    svg.append("text").attr("id","y label")
+        .attr("text-anchor","middle")
+        .attr("x",width/2 )
+        .attr("y",height +20)
+        .text(ystr + " (low)");
+
 
 
 
@@ -172,11 +201,11 @@ this.updateChart = function(corr){
 
 this.highlightLine = function(color){
     var oldStroke = xAxis.attr("stroke-width");
-    // xAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
-    // yAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
+    //xAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
+    //yAxis.select("path").transition().attr("stroke-width",5).duration(500).transition().attr("stroke-width",oldStroke).duration(500);
+    //line.transition().attr("fill","red").duration(500).transition().attr("fill",oldStroke).duration(500);
     line.attr("stroke",color);
     line.attr("opacity", 1);
-
 }
 
 this.setOpacity = function(alpha){
