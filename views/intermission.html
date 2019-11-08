@@ -131,7 +131,10 @@
         var newData = {
         };
         console.log(newData);
-        newData[data[0]["name"]] = data[0]["value"];
+        newData = data.map(function(d){
+            return {d["name"]:d["value"]}
+        })
+
         if (data.length === 3) {
             $.post("/api/intermission",newData,
                 success=function(d){
