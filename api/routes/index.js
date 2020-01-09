@@ -30,7 +30,6 @@ function zip() {
   });
 }
 
-
 const Schema = mongoose.Schema;
 
 //stance : 1 == for  & 0 == against
@@ -43,9 +42,9 @@ const responseSchema = new Schema({
     required: true,
     unique: true
   },
-    variables: Schema.Types.Mixed,
-    states: Schema.Types.Mixed,
-    intermission: Schema.Types.Mixed,
+  variables: Schema.Types.Mixed,
+  states: Schema.Types.Mixed,
+  intermission: Schema.Types.Mixed,
   date: {
     type: Date,
     default: Date.now
@@ -74,19 +73,17 @@ function getRandomInt(max) {
 let variables = [
   ["Yearly Income", "Height"],
   ["Weight of a Diamond", "Price of a Diamond"],
-  ["Yearly Income","Stress"],
+  ["Yearly Income", "Stress"],
   ["Vaccination Rate", "Rate of Illness"],
-  ["Exercise amount","Body Weight"]
+  ["Exercise amount", "Body Weight"]
 ];
 
-
-
-let states = ["mc","draw"];
+let states = ["mc", "draw"];
 // let states = ["draw","mc"];
 let stateIndex = 0;
 // const numTopics = 3;
 
-const Response = mongoose.model("uncertainty2Belief", responseSchema);
+const Response = mongoose.model("uncertainty3Belief", responseSchema);
 
 router.get("/api/userinfo", function(req, res) {
   if (req.session.userid) {
@@ -97,8 +94,6 @@ router.get("/api/userinfo", function(req, res) {
     res.send("please give consent first");
   }
 });
-
-
 
 router.get("/api/data", function(req, res) {
   res.status(200).send(req.session.variables[req.session.varIndex]);
@@ -127,7 +122,7 @@ router.get("/api/consent", function(req, res) {
     let newResponse = new Response({
       usertoken: token,
       variables: req.session.variables,
-      states :states
+      states: states
     });
 
     newResponse.save(function(err) {
@@ -141,22 +136,21 @@ router.get("/api/consent", function(req, res) {
   }
 });
 
-
 router.post("/api/intermission", function(req, res) {
-    let token = req.session.userid;
-    let data = req.body;
-    // console.log(data);
-    Response.findOneAndUpdate(
-        { usertoken: token},
-        {
-            intermission: data
-        },
-        function(err, doc) {
-            if (err) return res.send(500, { error: err });
-            console.log("yeaah");
-            return res.send("successfully saved!");
-        }
-    );
+  let token = req.session.userid;
+  let data = req.body;
+  // console.log(data);
+  Response.findOneAndUpdate(
+    { usertoken: token },
+    {
+      intermission: data
+    },
+    function(err, doc) {
+      if (err) return res.send(500, { error: err });
+      console.log("yeaah");
+      return res.send("successfully saved!");
+    }
+  );
 });
 
 router.post("/api/study", function(req, res) {
@@ -166,13 +160,11 @@ router.post("/api/study", function(req, res) {
   data["mode"] = req.session.state;
   data["variables"] = req.session.variables[req.session.varIndex];
 
-
-
   Response.findOneAndUpdate(
     { usertoken: token },
-      {
-          $push: { responses: data }
-      },
+    {
+      $push: { responses: data }
+    },
     function(err, doc) {
       if (err) {
         return res.send(500, { error: err });
@@ -194,7 +186,7 @@ router.post("/api/pre", function(req, res) {
     function(err, doc) {
       if (err) return res.send(500, { error: err });
       // console.log("yeaah");
-        req.session.preQuestion = true;
+      req.session.preQuestion = true;
       return res.send("successfully saved!");
     }
   );
@@ -234,13 +226,13 @@ router.get("/consent", function(req, res) {
   }
 });
 
-router.get("/intermission",function(req,res){
-    if (req.session.completed) {
-        res.render("debrief.html");
-    } else {
-        res.render("intermission.html");
-    }
-})
+router.get("/intermission", function(req, res) {
+  if (req.session.completed) {
+    res.render("debrief.html");
+  } else {
+    res.render("intermission.html");
+  }
+});
 
 router.get("/instructions", function(req, res) {
   if (req.session.completed) {
@@ -273,7 +265,6 @@ router.get("/instructions-draw", function(req, res) {
   }
 });
 
-
 router.get("/preforms", function(req, res) {
   if (!req.session.completed) {
     res.render("preforms.html");
@@ -286,75 +277,83 @@ router.get("/postforms", function(req, res) {
 
 router.get("/instructions-study", function(req, res) {
   console.log(req.session.state);
-    if (req.session.state === "draw"){
-      res.render("instructions-LC.html");
-    } else if (req.session.state === "mc") {
-      res.render("instructions-MC.html")
-    }
-    else{
-      res.send("error!");
-    }
+  if (req.session.state === "draw") {
+    res.render("instructions-LC.html");
+  } else if (req.session.state === "mc") {
+    res.render("instructions-MC.html");
+  } else {
+    res.send("error!");
+  }
 });
 
 router.get("/study", function(req, res) {
   console.log(req.session.state);
-    if (req.session.state === "draw"){
-      res.render("lineChartDraw.html");
-    } else if (req.session.state === "mc") {
-      res.render("lineChartMC.html")
-    }
-    else{
-      res.send("error!");
-    }
+  if (req.session.state === "draw") {
+    res.render("lineChartDraw.html");
+  } else if (req.session.state === "mc") {
+    res.render("lineChartMC.html");
+  } else {
+    res.send("error!");
+  }
 });
 
 router.get("/next", function(req, res) {
-    console.log(req.session.state);
-    console.log(req.session.variables[req.session.varIndex]);
-    req.session.varIndex+=1;
-    if (req.session.varIndex >= variables.length && req.session.stateIndex === 0) {
-        req.session.stateIndex +=1;
-        req.session.varIndex = 0;
-        req.session.state = req.session.states[req.session.stateIndex];
-        res.redirect("/intermission");
-    } else if (req.session.varIndex >= variables.length && req.session.stateIndex === 1) {
-        req.session.completed = true;
-        res.redirect("/postforms");
-
-    } else {
-        res.redirect("/study")
-    }
+  console.log(req.session.state);
+  console.log(req.session.variables[req.session.varIndex]);
+  req.session.varIndex += 1;
+  if (
+    req.session.varIndex >= variables.length &&
+    req.session.stateIndex === 0
+  ) {
+    req.session.stateIndex += 1;
+    req.session.varIndex = 0;
+    req.session.state = req.session.states[req.session.stateIndex];
+    res.redirect("/intermission");
+  } else if (
+    req.session.varIndex >= variables.length &&
+    req.session.stateIndex === 1
+  ) {
+    req.session.completed = true;
+    res.redirect("/postforms");
+  } else {
+    res.redirect("/study");
+  }
 });
 
 router.get("/debrief", function(req, res) {
-    if (req.session.completed && req.session.postQuestion && req.session.preQuestion){
-        res.render("debrief.html");
-    } else if (!req.session.preQuestion) {
-        res.redirect("preforms")
-    } else if (!req.session.postQuestion && !req.session.completed) {
-        res.redirect("study")
-    } else if (!req.session.postQuestion){
-        res.redirect("postforms")
-    }
+  if (
+    req.session.completed &&
+    req.session.postQuestion &&
+    req.session.preQuestion
+  ) {
+    res.render("debrief.html");
+  } else if (!req.session.preQuestion) {
+    res.redirect("preforms");
+  } else if (!req.session.postQuestion && !req.session.completed) {
+    res.redirect("study");
+  } else if (!req.session.postQuestion) {
+    res.redirect("postforms");
+  }
 });
 
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
 
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
 
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
+  return array;
 }
 
 module.exports = router;
